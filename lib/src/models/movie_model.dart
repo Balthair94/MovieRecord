@@ -62,4 +62,12 @@ class Movie {
     overview         = json['overview'] ?? "";
     releaseDate      = json['release_date'] ?? "";
   }
+
+  String getPosterPath() {
+    if(this.posterPath ==  null || this.posterPath == "") {
+      return 'assets/no-available-image.png';
+    } else {
+      return 'https://image.tmdb.org/t/p/w500${this.posterPath}';
+    }
+  }
 }
