@@ -6,19 +6,30 @@ class HorizontalList extends StatelessWidget {
 
   final List<Movie> movies;
 
-  HorizontalList({@required this.movies});
+  final Function loadMore;
+
+  final _pageController = PageController(
+      initialPage: 2,
+      viewportFraction: 0.2
+  );
+
+  HorizontalList({@required this.movies, this.loadMore});
 
   @override
   Widget build(BuildContext context) {
     final Size _screenSize = MediaQuery.of(context).size;
+
+    _pageController.addListener(() {
+      if(_pageController.position.pixels >= _pageController.position.maxScrollExtent - 200) {
+        loadMore();
+      }
+    });
+
     return Container(
       height: _screenSize.height * .2,
       child: PageView(
         pageSnapping: false,
-        controller: PageController(
-          initialPage: 0,
-          viewportFraction: 0.2
-        ),
+        controller: _pageController,
         children: _cardsList(context),
       ),
     );

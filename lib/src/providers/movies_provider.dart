@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -9,6 +11,22 @@ class MoviesProvider {
   String _movieDBLanguage = 'es-ES';
   int _movieDBVersion = 3;
 
+  int _popularPage = 0;
+  List<Movie> _popularMovies = List();
+
+  // broadcast make understand that many places can hear the same stream
+  final _popularMoviesStreamController =  StreamController<List<Movie>>.broadcast();
+
+  // Add a list of movies to the stream
+  Function(List<Movie>) get popularSink => _popularMoviesStreamController.sink.add;
+
+  // Hear when a new list of movies is added in the stream
+  Stream<List<Movie>> get popularStream => _popularMoviesStreamController.stream;
+
+  void disposePopularStream() {
+    _popularMoviesStreamController.close();
+  }
+
   Future<List<Movie>> getNowPlaying() async {
     final url = Uri.https(_movieDBUrl, '$_movieDBVersion/movie/now_playing',
         {'api_key': _movieDBApiKey, 'language': _movieDBLanguage});
@@ -17,9 +35,20 @@ class MoviesProvider {
   }
 
   Future<List<Movie>> getPopular() async {
+    _popularPage++;
     final url = Uri.https(_movieDBUrl, '$_movieDBVersion/movie/popular',
-        {'api_key': _movieDBApiKey, 'language': _movieDBLanguage});
-    return _performMovieListCall(url);
+        {
+          'api_key': _movieDBApiKey,
+          'language': _movieDBLanguage,
+          'page': '$_popularPage'
+        });
+
+    final response = await _performMovieListCall(url);
+
+    _popularMovies.addAll(response);
+    popularSink(_popularMovies);
+
+    return response;
   }
 
   Future<List<Movie>> _performMovieListCall(Uri url) async {

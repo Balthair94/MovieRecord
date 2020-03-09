@@ -9,6 +9,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _moviesProvider.getPopular();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Movies in teathers'),
@@ -55,11 +57,14 @@ class HomePage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8.0,),
-          FutureBuilder(
-              future: _moviesProvider.getPopular(),
+          StreamBuilder(
+              stream: _moviesProvider.popularStream,
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 if (snapshot.hasData && snapshot.data != null) {
-                  return HorizontalList(movies: snapshot.data,);
+                  return HorizontalList(
+                    movies: snapshot.data,
+                    loadMore: _moviesProvider.getPopular,
+                  );
                 } else {
                   return Center(child: CircularProgressIndicator());
                 }
