@@ -13,6 +13,16 @@ class MoviesProvider {
     final url = Uri.https(_movieDBUrl, '$_movieDBVersion/movie/now_playing',
         {'api_key': _movieDBApiKey, 'language': _movieDBLanguage});
 
+    return _performMovieListCall(url);
+  }
+
+  Future<List<Movie>> getPopular() async {
+    final url = Uri.https(_movieDBUrl, '$_movieDBVersion/movie/popular',
+        {'api_key': _movieDBApiKey, 'language': _movieDBLanguage});
+    return _performMovieListCall(url);
+  }
+
+  Future<List<Movie>> _performMovieListCall(Uri url) async {
     final resp = await http.get(url);
     final decodedData = json.decode(resp.body);
     final movies = Movies.fromJson(decodedData['results']);
