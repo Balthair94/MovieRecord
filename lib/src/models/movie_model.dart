@@ -70,4 +70,12 @@ class Movie {
       return 'https://image.tmdb.org/t/p/w500${this.posterPath}';
     }
   }
+
+  String getBackdropPath() {
+    if(this.backdropPath ==  null || this.backdropPath == "") {
+      return 'assets/no-available-image.png';
+    } else {
+      return 'https://image.tmdb.org/t/p/w500${this.backdropPath}';
+    }
+  }
 }
