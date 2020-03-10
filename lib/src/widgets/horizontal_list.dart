@@ -10,7 +10,7 @@ class HorizontalList extends StatelessWidget {
 
   final _pageController = PageController(
       initialPage: 2,
-      viewportFraction: 0.2
+      viewportFraction: 0.3
   );
 
   HorizontalList({@required this.movies, this.loadMore});
@@ -27,38 +27,39 @@ class HorizontalList extends StatelessWidget {
 
     return Container(
       height: _screenSize.height * .2,
-      child: PageView(
+      child: PageView.builder(
         pageSnapping: false,
         controller: _pageController,
-        children: _cardsList(context),
+        itemCount: movies.length,
+        itemBuilder: (BuildContext context, int index) {
+          return _card(context, movies[index]);
+        },
       ),
     );
   }
 
-  List<Widget> _cardsList(BuildContext context) {
-    return movies.map((movie) {
-      return Container(
-        margin: EdgeInsets.only(right: 15.0),
-        child: Column(
-          children: <Widget>[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: FadeInImage(
-                image: NetworkImage(movie.getPosterPath()),
-                placeholder: AssetImage('assets/jar-loading.gif'),
-                fit: BoxFit.cover,
-                height: 100.0,
-              ),
+  Widget _card(BuildContext context, Movie movie) {
+    return Container(
+      margin: EdgeInsets.only(right: 15.0),
+      child: Column(
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: FadeInImage(
+              image: NetworkImage(movie.getPosterPath()),
+              placeholder: AssetImage('assets/jar-loading.gif'),
+              fit: BoxFit.cover,
+              height: 100.0,
             ),
-            SizedBox(height: 8.0,),
-            Text(
-              movie.title,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.caption,
-            )
-          ],
-        ),
-      );
-    }).toList();
+          ),
+          SizedBox(height: 8.0,),
+          Text(
+            movie.title,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.caption,
+          )
+        ],
+      ),
+    );
   }
 }

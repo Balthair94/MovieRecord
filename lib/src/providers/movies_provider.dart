@@ -12,6 +12,7 @@ class MoviesProvider {
   int _movieDBVersion = 3;
 
   int _popularPage = 0;
+  bool _isLoading = false;
   List<Movie> _popularMovies = List();
 
   // broadcast make understand that many places can hear the same stream
@@ -35,7 +36,11 @@ class MoviesProvider {
   }
 
   Future<List<Movie>> getPopular() async {
+    if(_isLoading) return [];
+
     _popularPage++;
+    _isLoading = true;
+
     final url = Uri.https(_movieDBUrl, '$_movieDBVersion/movie/popular',
         {
           'api_key': _movieDBApiKey,
@@ -47,6 +52,8 @@ class MoviesProvider {
 
     _popularMovies.addAll(response);
     popularSink(_popularMovies);
+
+    _isLoading = false;
 
     return response;
   }
