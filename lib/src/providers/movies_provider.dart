@@ -70,7 +70,7 @@ class MoviesProvider {
   Future<List<Actor>> getCast(int movieId) async {
     final url = Uri.https(
             _movieDBUrl,
-            '$_movieDBVersion/$movieId/credits',
+            '$_movieDBVersion/movie/$movieId/credits',
             {'api_key': _movieDBApiKey}
         );
 
