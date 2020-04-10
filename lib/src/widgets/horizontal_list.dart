@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:movie_record/src/models/movie_model.dart';
 
+import 'package:movie_record/src/models/movie_detail_argument.dart';
+import 'package:movie_record/src/models/movie_model.dart';
 
 class HorizontalList extends StatelessWidget {
 
   final List<Movie> movies;
 
   final Function loadMore;
+
+  final String heroSubTag = "_popular";
 
   final _pageController = PageController(
       initialPage: 2,
@@ -44,7 +47,7 @@ class HorizontalList extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Hero(
-            tag: movie.id,
+            tag: "${movie.id}$heroSubTag",
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: FadeInImage(
@@ -68,7 +71,10 @@ class HorizontalList extends StatelessWidget {
     return GestureDetector(
       child: card,
       onTap: () {
-        Navigator.pushNamed(context, 'detail', arguments: movie);
+        Navigator.pushNamed(
+            context, 'detail',
+            arguments: MovieDetailArgument(movie, heroSubTag)
+        );
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_record/src/models/movie_detail_argument.dart';
 
 import 'package:movie_record/src/models/movie_model.dart';
 import 'package:movie_record/src/providers/movies_provider.dart';
@@ -7,20 +8,20 @@ import 'package:movie_record/src/models/actor_model.dart';
 class MovieDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Movie movie = ModalRoute.of(context).settings.arguments;
+    final MovieDetailArgument argument = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
         body: CustomScrollView(
       slivers: <Widget>[
-        _createAppBar(movie),
+        _createAppBar(argument.movie),
         SliverList(
           delegate: SliverChildListDelegate([
             SizedBox(
               height: 16.0,
             ),
-            _postTitle(movie, context),
-            _description(movie, context),
-            _createCastView(movie.id),
+            _postTitle(argument, context),
+            _description(argument.movie, context),
+            _createCastView(argument.movie.id),
           ]),
         ),
       ],
@@ -37,18 +38,18 @@ class MovieDetail extends StatelessWidget {
     );
   }
 
-  Widget _postTitle(Movie movie, BuildContext context) {
+  Widget _postTitle(MovieDetailArgument argument, BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: <Widget>[
           Hero(
-            tag: movie.id,
+            tag: "${argument.movie.id}${argument.heroSubTag}",
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: FadeInImage(
                 height: 150.0,
-                image: NetworkImage(movie.getPosterPath(),),
+                image: NetworkImage(argument.movie.getPosterPath(),),
                 placeholder: AssetImage('assets/no-available-image.png'),
               ),
             ),
@@ -61,11 +62,11 @@ class MovieDetail extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  movie.title,
+                  argument.movie.title,
                   style: Theme.of(context).textTheme.title,
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(movie.originalTitle,
+                Text(argument.movie.originalTitle,
                     style: Theme.of(context).textTheme.subtitle,
                     overflow: TextOverflow.ellipsis),
                 Row(
@@ -77,7 +78,7 @@ class MovieDetail extends StatelessWidget {
                     SizedBox(
                       width: 8.0,
                     ),
-                    Text('${movie.voteAverage}',
+                    Text('${argument.movie.voteAverage}',
                         style: Theme.of(context).textTheme.subhead)
                   ],
                 )
