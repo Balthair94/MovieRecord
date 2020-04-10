@@ -82,4 +82,18 @@ class MoviesProvider {
 
     return cast.actors;
   }
+
+  Future<List<Movie>> searchMovie(String query) async {
+    final url = Uri.https(
+        _movieDBUrl,
+        '$_movieDBVersion/search/movie',
+        {
+          'api_key': _movieDBApiKey,
+          'language': _movieDBLanguage,
+          'query': query
+        }
+        );
+
+    return _performMovieListCall(url);
+  }
 }
